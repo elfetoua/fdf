@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 19:45:31 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/15 22:18:18 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/16 20:10:32 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 char	*ft_line_rest(char *holder, char **line)
 {
-	register int		i;
+	int		i;
 	char	*rst;
 
 	i = 0;
@@ -31,8 +31,8 @@ char	*ft_line_rest(char *holder, char **line)
 
 void	gnl_helper(int fd, char **holder, int *rd)
 {
-	char *buff;
-	char *tmp;
+	char	*buff;
+	char	*tmp;
 
 	buff = ft_strnew(BUFF_SIZE);
 	while ((*rd = read(fd, buff, BUFF_SIZE)) > 0)

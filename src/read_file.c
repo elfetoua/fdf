@@ -6,12 +6,19 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 20:42:26 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/16 01:56:17 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/18 13:07:58 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
-#include "../includes/get_next_line.h"
+
+int	del_key(int key)
+{
+	
+	ft_putnbr(key);
+	ft_putstr("\n");
+	return 0;
+}
 
 // Function to convert hexadecimal to decimal
 int		hexTodec(char *hexVal) 
@@ -82,7 +89,7 @@ int		map_width(char *file)
 	return (clmn_nbr);
 }
 
-void	get_values(s_point *map_line, char *line)
+void	get_values(t_point *map_line, char *line)
 {
 	char	**split;
 	char	**sp;
@@ -103,29 +110,27 @@ void	get_values(s_point *map_line, char *line)
 			sp = ft_strsplit(split[i], ',');
 			map_line[i].v = ft_atoi(sp[0]);
 			hex = ft_strdup(sp[1] + 2);
-			ft_putendl(hex);
 			map_line[i].color = hexTodec(hex);
 			free(hex);
 			ft_bonus_freedoubledem(sp);
 		}
-		free(split[i]);
 		i++;
 	}
-	free(split);
+	ft_bonus_freedoubledem(split);
 }
 
-void	read_file(char *file, s_fdf *fdf)
+void	read_file(char *file, t_fdf *fdf)
 {
     int		fd;
 	char	*line;
-	int		i,j;
+	int		i;
 	
 	fdf->hieght = map_hieght(file);
 	fdf->width = map_width(file); // == the 1st line width
-	fdf->map_table = (s_point**)malloc(sizeof(s_point*) * (fdf->width + 1));
+	fdf->map_table = (t_point**)malloc(sizeof(t_point*) * (fdf->width + 1));
 	i = 0;
 	while (i <= fdf->hieght)
-		fdf->map_table[i++] = (s_point*)malloc(sizeof(s_point) * (fdf->width));
+		fdf->map_table[i++] = (t_point*)malloc(sizeof(t_point) * (fdf->width + 1));
 	fd = open(file, O_RDONLY);
 	i = 0;
 	while (get_next_line(fd, &line))
@@ -135,21 +140,32 @@ void	read_file(char *file, s_fdf *fdf)
 		i++;
 	}
 	fdf->map_table[i] = NULL;
+	fdf->mlx_ptr = mlx_init();
+    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 1000, 1000, "mehdi");
+	fdf->zoom = 20;
+	//draw(fdf);
 	i = 0;
+	int j;
 	while(fdf->map_table[i])
 	{
 		j = 0;
 		while(j < fdf->width)
 		{
-			ft_putendl("value is: ");
+		//	ft_putendl("value is: ");
 			ft_putnbr(fdf->map_table[i][j].v);
-			ft_putstr("\n");
-			ft_putendl("color is: ");
+			if(fdf->map_table[i][j].v == 0)
+				ft_putstr("  ");
+			else 
+				ft_putstr(" ");
+			/*ft_putendl("color is: ");
 			ft_putnbr(fdf->map_table[i][j].color);
-			ft_putstr("\n");
+			ft_putstr("\n");*/
 			j++;
 		}
+		ft_putstr("\n");
 		i++;
 	}
+	mlx_key_hook(fdf->win_ptr, del_key, 0);
+	mlx_loop(fdf->mlx_ptr);
 	close (fd);	
 }

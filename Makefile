@@ -6,14 +6,14 @@
 #    By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/14 20:07:06 by elfetoua          #+#    #+#              #
-#    Updated: 2020/02/16 00:06:48 by elfetoua         ###   ########.fr        #
+#    Updated: 2020/02/17 21:54:53 by elfetoua         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME= fdf
 
 SRC_PATH= src
-SRC_NAME = main.c read_file.c get_next_line.c checker.c
+SRC_NAME = main.c read_file.c get_next_line.c draw.c
 SRC= $(addprefix $(SRC_PATH)/, $(SRC_NAME))
 
 INC_NAME= fdf.h get_next_line.h
@@ -27,7 +27,8 @@ OBJ= $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 
 LIB= libft/libft.a
 
-CW= gcc 
+CW= gcc
+MLX = -lmlx -framework OpenGL -framework AppKit
 CFLAGS= -Wall -Wextra -Werror
 
 # **************************************************************************** #
@@ -39,7 +40,7 @@ libf:
 	@make -sC libft 
 
 $(NAME): $(LIB) $(OBJ)
-	$(CW) $(LIB) $(OBJ) -o $(NAME)
+	$(CW) $(MLX) $(LIB) $(OBJ) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(INC)
 	@mkdir $(OBJ_PATH) 2> /dev/null || true

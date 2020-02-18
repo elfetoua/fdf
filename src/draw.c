@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/16 22:33:10 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/18 13:03:03 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/18 19:38:26 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,22 +86,27 @@ void	draw(t_fdf *fdf)
 
 	var.x = 0;
 	fdf->m_color = WHITE;
-	while (var.x < fdf->width - 1)
+	while (var.x < fdf->width)
 	{
 		var.y = 0;
-		while (var.y < fdf->hieght - 3)
-		{
-			if (fdf->map_table[var.x][var.y].v != 0)
-				{
-					printf("x = %d\n y = %d\n", var.x, var.y);
-				}
+		while (var.y < fdf->hieght)
+ 		{
+			if (fdf->map_table[var.y][var.x].v != 0)
+				fdf->m_color = PINK;
+			else
+				fdf->m_color = WHITE;
 			pt.x = var.x;
 			pt.y = var.y + 1;
-			
-			ft_line(var, pt, fdf);
+			if (fdf->map_table[var.y + 1][var.x].v != 0)
+				fdf->m_color = PINK;
+			else
+				fdf->m_color = WHITE;
+			if(pt.y < fdf->hieght)
+				ft_line(var, pt, fdf);
 			pt.x = var.x + 1;
 			pt.y = var.y;
-			ft_line(var, pt, fdf);
+			if(pt.x < fdf->width)
+				ft_line(var, pt, fdf);
 			var.y++;
 		}
 		var.x++;

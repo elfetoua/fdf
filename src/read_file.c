@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 20:42:26 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/18 13:07:58 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/18 19:38:27 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ int		map_hieght(char *file)
 	int		line_nbr;
 
 	fd = open(file, O_RDONLY);
-	line_nbr = 0;
+	line_nbr = -1;
 	while (get_next_line(fd, &line))
 	{
-		line_nbr++;
+		++line_nbr;
 		free(line);
 	}
 	close (fd);
@@ -143,7 +143,8 @@ void	read_file(char *file, t_fdf *fdf)
 	fdf->mlx_ptr = mlx_init();
     fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 1000, 1000, "mehdi");
 	fdf->zoom = 20;
-	//draw(fdf);
+		ft_putendl("++++++++++\n ");
+	draw(fdf);
 	i = 0;
 	int j;
 	while(fdf->map_table[i])

@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 20:42:26 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/20 20:24:50 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/20 23:58:11 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,67 +14,51 @@
 
 int	deal_key(int key, void *fdf1)
 {
-	t_fdf *fdf;
+	t_fdf	*fdf;
+	static t_var	offset;
+
 	fdf = (t_fdf * )fdf1;
 	ft_putstr("Key is =\n");
 	ft_putnbr(key);
 	ft_putstr("\n");
-	draw_parallel(fdf);
-	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-	draw_parallel(fdf);
+	if (key == 53)
+		exit(0);
+	if (key == 69)
+		{
+			fdf->zoom *= 2;
+			mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		}
+	if(key == 78)
+	{
+		if(fdf->zoom != 1)
+			fdf->zoom /= 2;
+		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	}
+	if (key == 123)
+		{
+			mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+			offset.x -= 10;
+		}
+	if (key == 124)
+		{
+			mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+			offset.x += 10;
+		}
+	if (key == 126)
+		{
+			mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+			offset.y -= 10;
+		}
+	if (key == 125)
+	{
+		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		offset.y += 10;
+	}
+	draw_iso(fdf, offset);
 	return 0;
 }
 
-int		hexTodec(char *hexVal) 
-{
-    int len;
-    int base; 
-    int dec_val;
-	int	i;
-	
-	len = ft_strlen(hexVal);
-	base = 1;
-	dec_val = 0;
-	i = len - 1;
-    while (i >= 0)
-    {
-        if (hexVal[i] >= '0' && hexVal[i] <= '9')
-        {
-            dec_val += (hexVal[i] - 48) * base;
-            base = base * 16;
-        }
-        else if (hexVal[i] >= 'A' && hexVal[i] <='F')
-        {
-            dec_val += (hexVal[i] - 55) * base; 
-            base = base * 16;
-        }
-		i--;
-    }
-    return dec_val;
-}
 
-void		map_dimensions(char *file, int *clmn_nbr, int *line_nbr)
-{
-	int		fd;
-	char	*line;
-	int		ret;
-
-	fd = open(file, O_RDONLY);
-	*line_nbr = 0;
-	line = NULL;
-	ret = 0;
-	ret = get_next_line(fd, &line);
-	if (ret > 0)
-		(*line_nbr)++;
-	*clmn_nbr = ft_bonus_countwords(line, ' ');
-	ft_strdel(&line);
-	while (get_next_line(fd, &line))
-	{
-		++(*line_nbr);
-		ft_strdel(&line);
-	}
-	close (fd);
-}
 
 void	get_values(t_point *map_line, char *line)
 {
@@ -93,7 +77,10 @@ void	get_values(t_point *map_line, char *line)
 		if (!ft_strchr(split[i], ','))
 			{
 				map_line[i].v = ft_atoi(split[i]);
-				map_line[i].color = 0;
+				if (map_line[i].v == 0)
+					map_line[i].color = WHITE;
+				else
+					map_line[i].color = PINK;
 			}
 		else
 		{
@@ -129,9 +116,9 @@ void	read_file(char *file, t_fdf *fdf)
 	}
 	fdf->map_table[i] = NULL;
 	fdf->mlx_ptr = mlx_init();
-    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 1000, 1000, "mehdi");
-	fdf->zoom = 25;
-	home();
+    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 2000, 2000, "FDF");
+	fdf->zoom = 1;
+	//home();
 	mlx_key_hook(fdf->win_ptr, deal_key, (void *)fdf);
 	ft_putstr("\n");
 	mlx_loop(fdf->mlx_ptr);

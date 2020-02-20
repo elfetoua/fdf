@@ -6,14 +6,14 @@
 #    By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/14 20:07:06 by elfetoua          #+#    #+#              #
-#    Updated: 2020/02/18 19:03:36 by elfetoua         ###   ########.fr        #
+#    Updated: 2020/02/20 22:40:41 by elfetoua         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME= fdf
 
 SRC_PATH= src
-SRC_NAME = main.c read_file.c get_next_line.c draw.c
+SRC_NAME = main.c read_file.c get_next_line.c draw.c basic.c
 SRC= $(addprefix $(SRC_PATH)/, $(SRC_NAME))
 
 INC_NAME= fdf.h get_next_line.h

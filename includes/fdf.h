@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/08 00:01:30 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/20 20:25:02 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/20 23:58:10 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef	struct	s_var
 {
     int		x;
 	int		y;
+	int		z; /*/*/
 }				t_var;
 
 typedef	struct			s_line
@@ -62,9 +63,10 @@ typedef	struct			s_line
 }						t_line;
 
 void	read_file(char *, t_fdf *);
-void	map_dimenions(char *, int*, int*);
+void	map_dimensions(char *, int*, int*);
 void	get_values(t_point *, char *);
 int		hexTodec(char *);
 void    draw_parallel(t_fdf *);
 void	home(void);
+void	draw_iso(t_fdf *, t_var);
 #endif

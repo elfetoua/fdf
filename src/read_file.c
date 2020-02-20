@@ -6,21 +6,25 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 20:42:26 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/18 19:38:27 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/20 20:24:50 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-int	del_key(int key)
+int	deal_key(int key, void *fdf1)
 {
-	
+	t_fdf *fdf;
+	fdf = (t_fdf * )fdf1;
+	ft_putstr("Key is =\n");
 	ft_putnbr(key);
 	ft_putstr("\n");
+	draw_parallel(fdf);
+	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	draw_parallel(fdf);
 	return 0;
 }
 
-// Function to convert hexadecimal to decimal
 int		hexTodec(char *hexVal) 
 {
     int len;
@@ -33,60 +37,43 @@ int		hexTodec(char *hexVal)
 	dec_val = 0;
 	i = len - 1;
     while (i >= 0)
-    {    
-        // if character lies in '0'-'9', converting
-        // it to integral 0-9 by subtracting 48 from
-        // ASCII value.
-        if (hexVal[i]>='0' && hexVal[i]<='9')
+    {
+        if (hexVal[i] >= '0' && hexVal[i] <= '9')
         {
-            dec_val += (hexVal[i] - 48)*base;
-            // incrementing base by power
+            dec_val += (hexVal[i] - 48) * base;
             base = base * 16;
         }
-  
-        // if character lies in 'A'-'F' , converting
-        // it to integral 10 - 15 by subtracting 55
-        // from ASCII value
-        else if (hexVal[i]>='A' && hexVal[i]<='F')
+        else if (hexVal[i] >= 'A' && hexVal[i] <='F')
         {
-            dec_val += (hexVal[i] - 55)*base; 
-            // incrementing base by power
-            base = base*16;
+            dec_val += (hexVal[i] - 55) * base; 
+            base = base * 16;
         }
 		i--;
     }
     return dec_val;
 }
 
-int		map_hieght(char *file)
+void		map_dimensions(char *file, int *clmn_nbr, int *line_nbr)
 {
 	int		fd;
 	char	*line;
-	int		line_nbr;
+	int		ret;
 
 	fd = open(file, O_RDONLY);
-	line_nbr = -1;
+	*line_nbr = 0;
+	line = NULL;
+	ret = 0;
+	ret = get_next_line(fd, &line);
+	if (ret > 0)
+		(*line_nbr)++;
+	*clmn_nbr = ft_bonus_countwords(line, ' ');
+	ft_strdel(&line);
 	while (get_next_line(fd, &line))
 	{
-		++line_nbr;
-		free(line);
+		++(*line_nbr);
+		ft_strdel(&line);
 	}
 	close (fd);
-	return (line_nbr);
-}
-
-int		map_width(char *file)
-{
-	int		fd;
-	char	*line;
-	int		clmn_nbr;
-
-	fd = open(file, O_RDONLY);
-	get_next_line(fd, &line);
-	clmn_nbr = ft_bonus_countwords(line, ' ');
-	free(line);
-	close(fd);
-	return (clmn_nbr);
 }
 
 void	get_values(t_point *map_line, char *line)
@@ -94,9 +81,12 @@ void	get_values(t_point *map_line, char *line)
 	char	**split;
 	char	**sp;
 	int		i;
-	char	*hex;
 	
+	split = NULL;
 	split = ft_strsplit(line, ' ');
+
+	if (!split)
+		ft_putendl("errrrrror");
 	i = 0;
 	while (split[i])
 	{
@@ -109,9 +99,7 @@ void	get_values(t_point *map_line, char *line)
 		{
 			sp = ft_strsplit(split[i], ',');
 			map_line[i].v = ft_atoi(sp[0]);
-			hex = ft_strdup(sp[1] + 2);
-			map_line[i].color = hexTodec(hex);
-			free(hex);
+			map_line[i].color = hexTodec(sp[1] + 2);
 			ft_bonus_freedoubledem(sp);
 		}
 		i++;
@@ -125,48 +113,27 @@ void	read_file(char *file, t_fdf *fdf)
 	char	*line;
 	int		i;
 	
-	fdf->hieght = map_hieght(file);
-	fdf->width = map_width(file); // == the 1st line width
-	fdf->map_table = (t_point**)malloc(sizeof(t_point*) * (fdf->width + 1));
+	map_dimensions(file, &fdf->width, &fdf->hieght);
+	fdf->map_table = (t_point**)malloc(sizeof(t_point*) * (fdf->hieght + 1));
 	i = 0;
 	while (i <= fdf->hieght)
 		fdf->map_table[i++] = (t_point*)malloc(sizeof(t_point) * (fdf->width + 1));
-	fd = open(file, O_RDONLY);
 	i = 0;
-	while (get_next_line(fd, &line))
+	line = NULL;
+	fd = open(file, O_RDONLY);
+	while (i < fdf->hieght && get_next_line(fd, &line))
 	{
 		get_values(fdf->map_table[i], line);
-		free(line);
+		ft_strdel(&line);
 		i++;
 	}
 	fdf->map_table[i] = NULL;
 	fdf->mlx_ptr = mlx_init();
     fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 1000, 1000, "mehdi");
-	fdf->zoom = 20;
-		ft_putendl("++++++++++\n ");
-	draw(fdf);
-	i = 0;
-	int j;
-	while(fdf->map_table[i])
-	{
-		j = 0;
-		while(j < fdf->width)
-		{
-		//	ft_putendl("value is: ");
-			ft_putnbr(fdf->map_table[i][j].v);
-			if(fdf->map_table[i][j].v == 0)
-				ft_putstr("  ");
-			else 
-				ft_putstr(" ");
-			/*ft_putendl("color is: ");
-			ft_putnbr(fdf->map_table[i][j].color);
-			ft_putstr("\n");*/
-			j++;
-		}
-		ft_putstr("\n");
-		i++;
-	}
-	mlx_key_hook(fdf->win_ptr, del_key, 0);
+	fdf->zoom = 25;
+	home();
+	mlx_key_hook(fdf->win_ptr, deal_key, (void *)fdf);
+	ft_putstr("\n");
 	mlx_loop(fdf->mlx_ptr);
 	close (fd);	
 }

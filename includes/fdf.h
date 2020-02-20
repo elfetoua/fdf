@@ -6,7 +6,7 @@
 /*   By: elfetoua <elfetoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/08 00:01:30 by elfetoua          #+#    #+#             */
-/*   Updated: 2020/02/18 19:12:20 by elfetoua         ###   ########.fr       */
+/*   Updated: 2020/02/20 20:25:02 by elfetoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ typedef	struct	s_fdf
 
 typedef	struct	s_var
 {
-    int		i;
-    int		j;
     int		x;
 	int		y;
 }				t_var;
@@ -63,13 +61,10 @@ typedef	struct			s_line
 	double				diffy;
 }						t_line;
 
-void    parser(char *);
-void	checker(char ***);
 void	read_file(char *, t_fdf *);
-int		map_hieght(char *);
-int		map_width(char *);
+void	map_dimenions(char *, int*, int*);
 void	get_values(t_point *, char *);
 int		hexTodec(char *);
-void    draw(t_fdf *);
-void	bresnham(t_var, t_var, t_fdf *);
+void    draw_parallel(t_fdf *);
+void	home(void);
 #endif
